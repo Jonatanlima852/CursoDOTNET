@@ -433,11 +433,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\PrimeiraAPI\\PrimeiraAPI.csproj",
-      "projectName": "PrimeiraAPI",
-      "projectPath": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\PrimeiraAPI\\PrimeiraAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\ApiCatalogo\\ApiCatalogo.csproj",
+      "projectName": "ApiCatalogo",
+      "projectPath": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\ApiCatalogo\\ApiCatalogo.csproj",
       "packagesPath": "C:\\Users\\Jonatan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\PrimeiraAPI\\obj\\",
+      "outputPath": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\ApiCatalogo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Jonatan\\AppData\\Roaming\\NuGet\\NuGet.Config"

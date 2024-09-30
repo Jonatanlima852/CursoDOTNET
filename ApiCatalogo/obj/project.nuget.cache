@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SHRF27bd+kM=",
+  "dgSpecHash": "MjF4dNeRUIw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\PrimeiraAPI\\PrimeiraAPI.csproj",
+  "projectFilePath": "C:\\Users\\Jonatan\\Desktop\\CursoDotNet\\PrimeiraAPI\\ApiCatalogo\\ApiCatalogo.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Jonatan\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Jonatan\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",

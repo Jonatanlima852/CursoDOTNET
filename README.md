@@ -2,5 +2,5 @@
 # O comando a seguuir usa -controllers para adicionar arquitetura usando controllers. Se retirar, gera arquitetura minimal.
 # O comando -o seguido do nome do arquivo resulta na criação de nova pasta
 ```
-dotnet new webapi -controllers -o PrimeiraAPI
+dotnet new webapi -controllers -o ApiCatalogo
 ```

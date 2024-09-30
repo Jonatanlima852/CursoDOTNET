@@ -1,4 +1,4 @@
-namespace PrimeiraAPI;
+namespace ApiCatalogo;
 
 public class WeatherForecast
 {
