@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+
+
 namespace ApiCatalogo.Models;
 
 public class Categoria
