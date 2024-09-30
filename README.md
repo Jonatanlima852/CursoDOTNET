@@ -4,3 +4,10 @@
 ```
 dotnet new webapi -controllers -o ApiCatalogo
 ```
+
+# Instalações realizadas para utilizar o entity framework e fazer migrations:
+```
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Design  
+dotnet tool install --global dotnet-ef                 
+```
