@@ -7,6 +7,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// conexao com banco através da string de conexão em appsettings.json
+// Incluiu serviço do contexto do EF Core no conteiner DI nativo
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(mySqlConnection, 
+        ServerVersion.AutoDetect(mySqlConnection)));  
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -9,6 +9,8 @@ public class Produto
     public string? ImageUrl { get; set;}
     public float Estoque { get; set;}
     public DateTime DataCadastro { get; set;}
+    public int CategoriaId { get; set; } //para deixar mais explícito relacionamento entre entidades
+    public Categoria? Categoria { get; set; } 
 }
 
 // são classes anêmicas: só possuem propriedades. Não possuem comportamento. Entity Framework fará o mapeamento para banco de dados
