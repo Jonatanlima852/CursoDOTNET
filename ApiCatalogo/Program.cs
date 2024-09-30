@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using ApiCatalogo.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,13 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+string? mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // conexao com banco através da string de conexão em appsettings.json
 // Incluiu serviço do contexto do EF Core no conteiner DI nativo
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(mySqlConnection, 
-        ServerVersion.AutoDetect(mySqlConnection)));  
+    options.UseSqlServer(mySqlConnection));  
 
 
 

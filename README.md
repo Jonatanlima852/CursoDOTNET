@@ -12,6 +12,23 @@ dotnet add package Microsoft.EntityFrameworkCore.Design
 dotnet tool install --global dotnet-ef                 
 ```
 
+# Migrations
+
 ### Migrations - o recurso EF Core Migrations oferece uma maneira de atualizar de forma incremental o esquema do banco de dados para mantê-lo em sincronia com o modelo de dados do aplicativo, preservando os dados existentes no banco de dados. 
 ### Sempre que alterar as classes do modelo domínio, deve-se executar o Migrations para manter o esquema do banco de dados atualizado. 
 ### Modelo de entidades do domínio (cria)-> Modelo do EF Core (Migrations)-> Banco de dados
+
+### Cria o script de Migration:
+```
+dotnet ef migrations add 'nome'
+```
+
+### Remove o script de Migration:
+```
+dotnet ef migrations remove 'nome'
+```
+
+### Gera o DB e as tabelas com base no script:
+```
+dotnet ef database update
+```
