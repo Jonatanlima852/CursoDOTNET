@@ -35,3 +35,4 @@ dotnet ef database update
 
 ### Aplicaremos Data Anottations para sobrescrever as convenções do EF Core 
 ### Os Data Annotations possíveis são: Key, Table("nome"), Column, DataType, Foreign Key, NotMapped, StringLength, Required. Ainda pode-se adicionar uma ErrorMessage.
+### A desvantagem de utilizar o Data Annotation é que ele polui o código da classe. Fluent Validation API nesse caso pode ser utilizado
