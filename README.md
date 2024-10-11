@@ -33,14 +33,32 @@ dotnet ef migrations remove 'nome'
 dotnet ef database update
 ```
 
+# Data Anottations e FluentValidation API
+
 ### Aplicaremos Data Anottations para sobrescrever as convenções do EF Core 
 ### Os Data Annotations possíveis são: Key, Table("nome"), Column, DataType, Foreign Key, NotMapped, StringLength, Required. Ainda pode-se adicionar uma ErrorMessage.
 ### A desvantagem de utilizar o Data Annotation é que ele polui o código da classe. Fluent Validation API nesse caso pode ser utilizado
 
-### Para popular as databases, usaremos migrations vazias com códigos SQL de insert into nas voids Up e Down
+# Para popular as databases, usaremos migrations vazias(Ou seja, cria-se migrações sem alterar as classes do domínio) com códigos SQL de "insert into" nas voids Up e Down
 
-### Para executar a API, usamos:
+# Controllers
+
+### Controllers podem ser criados usando o template padrão do projeto, são classes que derivam da classe ControllerBase, e o nome é formado pelo nome do controlador seguido do sufixo Controller. Em uma minimal API, a estrutura é diferente.  Utilizam métodos herdados da classe ControllerBase para retornar as responses. Possuem uma estrutura baseada em decorators.
+
+### O decorator [ApiController] permite, por exemplo, respostas http 400 automáticas, requisito de roteamento de atributo, inferência de parâmetro de origem, inferência de solicitação de dados de várias partes, e uso de Problem Details para códigos de status de erro
+
+### Em Program.cs, adicionar o AddControllers() aos serviços, e condigurar app.MapControllerrs(). O controlador acessa o EF Core(AppDbContext) que acessa o DB. Usaremos injeção de dependencia no controlador. Por isso adicionamos nos serviços.
+
+### Para criar um controlador, no Visual Studio, criar "API Controller with actions using Entity Framework"
 
 ```
 dotnet run
 ```
+
+
+# Para executar a API, usamos:
+
+```
+dotnet run
+```
+
