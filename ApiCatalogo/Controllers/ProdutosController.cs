@@ -59,7 +59,7 @@ namespace ApiCatalogo.Controllers
         {
             if (id != produto.ProdutoId)
             {
-                return BadRequest(); //retorna 404
+                return BadRequest(); //retorna 400
             }
 
             // como estamos em um cenário desconectado(EF Core e DB), precisamos avisar o contexto de que a entidade do produto está em um cenário modificado
