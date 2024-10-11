@@ -57,6 +57,10 @@ dotnet run
 
 ### Se tiver referências cíclicas na aplicação, configurar para o serializer Json ignorar estas referências no Program.cs.
 ### Se quiser ignorar propriedades individuais na hora de fazer put e post, configurar usando decorator no model ou no Program.cs. Esse tipo de problema ocorre devido a serialização/desserialização da resposta SQL do banco.
+### Quando consultamos entidades usando o EF, ele armazena as entidades no contexto para realizar o tracking das entidades para acompanhar o estado. Este recurso adiciona uma sobrecarga que afeta o desempenho das consultas rastreadas. Para resolver, pode-se adicionar o método AsNoTracking nas consultas de somente leitura. Utilizar quando o resultado da consulta não precisar ser alterado. 
+
+### Além disso, nunca retornar todos registros de um conulta -> adicionar método Take(10) por exemplo
+### Também nunca retornar objetos relacionados sem aplicar filtro. 
 
 # Para executar a API, usamos:
 

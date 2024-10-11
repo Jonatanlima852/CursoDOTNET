@@ -18,7 +18,7 @@ namespace ApiCatalogo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            var categorias = _context.Categorias.ToList();
+            var categorias = _context.Categorias.AsNoTracking().Take(10).ToList();
             if(categorias is null)
             {
                 return NotFound("Categorias não encontradas.");
@@ -83,7 +83,7 @@ namespace ApiCatalogo.Controllers
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
-            var categorias_com_produtos = _context.Categorias.Include(c => c.Produtos).ToList();
+            var categorias_com_produtos = _context.Categorias.AsNoTracking().Take(10).Include(c => c.Produtos).Where(c => c.CategoriaId <= 5).ToList();
             if(categorias_com_produtos is null)
             {
                 return NotFound("Categorias não encontradas");
