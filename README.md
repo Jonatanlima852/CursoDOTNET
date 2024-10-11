@@ -55,6 +55,7 @@ dotnet ef database update
 dotnet run
 ```
 
+# Se tiver referências cíclicas na aplicação, configurar para o serializer Json ignorar estas referências.
 
 # Para executar a API, usamos:
 
