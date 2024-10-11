@@ -55,7 +55,8 @@ dotnet ef database update
 dotnet run
 ```
 
-# Se tiver referências cíclicas na aplicação, configurar para o serializer Json ignorar estas referências.
+### Se tiver referências cíclicas na aplicação, configurar para o serializer Json ignorar estas referências no Program.cs.
+### Se quiser ignorar propriedades individuais na hora de fazer put e post, configurar usando decorator no model ou no Program.cs. Esse tipo de problema ocorre devido a serialização/desserialização da resposta SQL do banco.
 
 # Para executar a API, usamos:
 

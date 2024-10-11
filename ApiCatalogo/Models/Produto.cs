@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApiCatalogo.Models;
 
@@ -22,9 +23,14 @@ public class Produto
     [Required]
     [StringLength(300)]
     public string? ImageUrl { get; set;}
+
     public float Estoque { get; set;}
+
     public DateTime DataCadastro { get; set;}
+
     public int CategoriaId { get; set; } //para deixar mais explícito relacionamento entre entidades
+    
+    [JsonIgnore] //Ignorando propriedade na serialização
     public Categoria? Categoria { get; set; } 
 }
 
