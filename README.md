@@ -62,6 +62,27 @@ dotnet run
 ### Além disso, nunca retornar todos registros de um conulta -> adicionar método Take(10) por exemplo
 ### Também nunca retornar objetos relacionados sem aplicar filtro. 
 
+### Para lidar com o tratamento de erros em ambiente de produção, podemos configurar uma página de tratamento para estes erros personalizada para o ambiente de produção, usando  middleware UseExcpetionHandler. Captura e registra requisições não tratadas. Além disso, usamos Try Catch e a lib StatusCode.
+
+## Roteamento -> importante para clareza dos endpoints e não haver ambiguidade.
+### Pode-se configurar parâmetros, roteamento, e restrição de rotas(isso não deve ser a validação do parametro, mas deve ser utilizado apenas para diferenciar a rota)
+
+### Sobre tipos de retorno, ActionResult implementa a interface abstrata IActionResult. O segundo é vantajoso de se utilizar com ActionResult<T> de forma que se pode retornar também um tipo T, além da Action (Com IAction, teria-se que criar New ObjectResult(T)). No entanto, pode-se utilizar como preferencia interface nos demais casos.
+
+## Métodos Actions Síncronos: Quando uma request chega, uma thread do poll da aplicação é designada para processá-la e ficará bloqueada até o fim do request.
+## Métodos Actions Assíncrons: A thread é encarregada de processar a requisição, mas é devolvida ao pool enquanto a operação é feira. Quando ela acaba, a thread é avisada e retoma o controle. 
+### Para fazer uso disso, usa-se async, await e o tipo Task como tipo para a action. Regras:
+### 1. A assinatura do método deve incluir o modificador async
+### 2. O método deve ter um tipo de retorno Task<TResult>, Task ou void
+### 3. As declarações devem incluir pelo menos uma expressão await - diz ao compilador que o método precisa ser suspenso enquanto a operação estiver ocupada
+### 4. O nome do método deve ter o sufico Async por convenção
+
+## O assincronismo melhora a experiência do usuário e o ganho é atender mais requisições em paralelo. Podem, há perda de desempenho e a requisição específica não ficará mais rápida em hipótese alguma. Por exemplo, é interessante utilizar nos métodos Get que estão acessando o DB.
+
+
+
+
+
 # Para executar a API, usamos:
 
 ```

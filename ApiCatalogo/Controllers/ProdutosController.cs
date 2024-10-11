@@ -19,20 +19,25 @@ namespace ApiCatalogo.Controllers
         // Usamos decorator para que o controlador receba as requisições tipo Get
         // Inumerable é otimizado, por demanda, não guarda tudo na memória 
         [HttpGet] 
-        public ActionResult<IEnumerable<Produto>> Get()
+        public async Task<ActionResult<IEnumerable<Produto>>> GetAsync()
         {
-            var produtos = _context.Produtos.AsNoTracking().Take(10).ToList();
-            if(produtos is null)
-            {
-                return NotFound("Produtos não encontrados.");
-            }
-            return produtos;
+
+            // var produtos = _context.Produtos.AsNoTracking().Take(10).ToList();
+            // if(produtos is null)
+            // {
+            //     return NotFound("Produtos não encontrados.");
+            // }
+            // return produtos;
+
+            return await _context.Produtos.AsNoTracking().Take(10).ToListAsync();
         }
 
         [HttpGet("{id:int}", Name="ObterProduto")]  //para receber o id e obter na determinada rota
-        public ActionResult<Produto> Get(int id)
+        public async Task<ActionResult<Produto>> GetByIdAsync(int id)
         {
-            var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id); // vai receber o primeiro produto que satisfaz o critério
+            var produto = await _context.Produtos.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ProdutoId == id); // vai receber o primeiro produto que satisfaz o critério
+            
             if(produto is null)
             {
                 return NotFound("Produto não encontrado");
