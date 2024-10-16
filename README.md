@@ -1,6 +1,6 @@
 # Para construir o projeto, foi utilizando o comando com .NET CLI, disponível a partir da instalação do SDK do .NET 8.0:
-### O comando a seguuir usa -controllers para adicionar arquitetura usando controllers. Se retirar, gera arquitetura minimal.
-### O comando -o seguido do nome do arquivo resulta na criação de nova pasta
+O comando a seguuir usa -controllers para adicionar arquitetura usando controllers. Se retirar, gera arquitetura minimal.
+O comando -o seguido do nome do arquivo resulta na criação de nova pasta
 ```
 dotnet new webapi -controllers -o ApiCatalogo
 ```
@@ -14,9 +14,9 @@ dotnet tool install --global dotnet-ef
 
 # Migrations
 
-### Migrations - o recurso EF Core Migrations oferece uma maneira de atualizar de forma incremental o esquema do banco de dados para mantê-lo em sincronia com o modelo de dados do aplicativo, preservando os dados existentes no banco de dados. 
-### Sempre que alterar as classes do modelo domínio, deve-se executar o Migrations para manter o esquema do banco de dados atualizado. 
-### Modelo de entidades do domínio (cria)-> Modelo do EF Core (Migrations)-> Banco de dados
+Migrations - o recurso EF Core Migrations oferece uma maneira de atualizar de forma incremental o esquema do banco de dados para mantê-lo em sincronia com o modelo de dados do aplicativo, preservando os dados existentes no banco de dados. 
+Sempre que alterar as classes do modelo domínio, deve-se executar o Migrations para manter o esquema do banco de dados atualizado. 
+Modelo de entidades do domínio (cria)-> Modelo do EF Core (Migrations)-> Banco de dados
 
 ### Cria o script de Migration:
 ```
@@ -35,11 +35,28 @@ dotnet ef database update
 
 # Data Anottations e FluentValidation API
 
-Aplicaremos Data Anottations para sobrescrever as convenções do EF Core Os Data Annotations possíveis são: Key, Table("nome"), Column, DataType, Foreign Key, NotMapped, StringLength, Required. Ainda pode-se adicionar uma ErrorMessage.
+Aplicaremos Data Anottations para sobrescrever as convenções do EF Core Os Data Annotations possíveis são: [Key], [Table("nome")], [Column], [DataType], [ForeignKey], [NotMapped], [MaxLength], [Required]. Ainda pode-se adicionar uma ErrorMessage. 
+
+Data Anottations também podem ser utilizados na validação, invés de somente para sobrescrever as convenções do EF Core ao fazer mapeamento.
+
+Validações interessante são: 
+
+1. [RegularExpression("regex", ErrorMessage="erro")]
+2. [Range(18, 65, ErrorMessage="idade deve estar entre 18 e 65")]
+3. [CreditCard], [Url], [Phone], [Compare("Senha")] (este permite comprar duas propriedades)
+4. [StringLength(10, ErrorMessage="erro", MinimumLength = 5)]
+
+O atributo [ApiController] faz com que as validações sejam feitas automaticamente, verificando se o ModelState é válido ou não. A validação ocorre após o Model Binding. A validação manual utilizaria TryValidate(model). 
+
+Pode-se criar atributos personalizados para fazer a validação ou impelementar IValidatableObject no seu modelo para acessar todas propriedades e fazer uma validação mais complexa. (Ver pasta Validation)
+
+Vantagem: Simplicidade e centralização da validação de modelo
 
 A desvantagem de utilizar o Data Annotation é que ele polui o código da classe. Fluent Validation API nesse caso pode ser utilizado
 
-# Para popular as databases, usaremos migrations vazias(Ou seja, cria-se migrações sem alterar as classes do domínio) com códigos SQL de "insert into" nas voids Up e Down
+# População de DBs
+
+Para popular as databases, usaremos migrations vazias(Ou seja, cria-se migrações sem alterar as classes do domínio) com códigos SQL de "insert into" nas voids Up e Down
 
 # Controllers
 
@@ -68,15 +85,20 @@ Também nunca retornar objetos relacionados sem aplicar filtro.
 
 Para lidar com o tratamento de erros em ambiente de produção, podemos configurar uma página de tratamento para estes erros personalizada para o ambiente de produção, usando  middleware UseExcpetionHandler. Captura e registra requisições não tratadas. Além disso, usamos Try Catch e a lib StatusCode.
 
-# Roteamento -> importante para clareza dos endpoints e não haver ambiguidade.
+# Roteamento 
+
+Roteamento é importante para clareza dos endpoints e não haver ambiguidade.
+
 Pode-se configurar parâmetros, roteamento, e restrição de rotas(isso não deve ser a validação do parametro, mas deve ser utilizado apenas para diferenciar a rota)
 
-### Sobre tipos de retorno, ActionResult implementa a interface abstrata IActionResult. O segundo é vantajoso de se utilizar com ActionResult<T> de forma que se pode retornar também um tipo T, além da Action (Com IAction, teria-se que criar New ObjectResult(T)). No entanto, pode-se utilizar como preferencia interface nos demais casos.
+Sobre tipos de retornonnas funções do controller, ActionResult implementa a interface abstrata IActionResult. O segundo é vantajoso de se utilizar com ActionResult<T> de forma que se pode retornar também um tipo T, além da Action (Com IAction, teria-se que criar New ObjectResult(T)). No entanto, pode-se utilizar como preferencia interface nos demais casos.
 
 # Métodos Assíncronos
 
-### Métodos Actions Síncronos: Quando uma request chega, uma thread do poll da aplicação é designada para processá-la e ficará bloqueada até o fim do request.
-### Métodos Actions Assíncrons: A thread é encarregada de processar a requisição, mas é devolvida ao pool enquanto a operação é feira. Quando ela acaba, a thread é avisada e retoma o controle. 
+Métodos Actions Síncronos: Quando uma request chega, uma thread do poll da aplicação é designada para processá-la e ficará bloqueada até o fim do request.
+
+Métodos Actions Assíncrons: A thread é encarregada de processar a requisição, mas é devolvida ao pool enquanto a operação é feira. Quando ela acaba, a thread é avisada e retoma o controle. 
+
 Para fazer uso disso, usa-se async, await e o tipo Task como tipo para a action. Regras:
 1. A assinatura do método deve incluir o modificador async
 2. O método deve ter um tipo de retorno Task<TResult>, Task ou void
@@ -96,7 +118,9 @@ Parâmetros para definir se o model binding ocorrerá ou não:
 1. [BindRequired] -> adiciona um erro ao ModelState se a vinculação dos parâmetros não puder ocorrer. Utilizado no controller (Bom para exigir query strings)
 2. [BindNever] -> Informa para não vincular informação ao parametro. Utilizado no Model
 
-Atributos que indicam a fonte de dados dos parâmetros: FromForm(somente dados do formulário enviado), FromRoute(vincula apenas dados oriundos da rota de dados), FromQuery, FromHeader, FromBody, FromServices(vicula o valor à implementação que foi configurada no seu conteiner de injeção de dependência) -> Parecem interessantes para segurança das rotas.
+Atributos que indicam a fonte de dados dos parâmetros: FromForm - (somente dados do formulário enviado), FromRoute - (vincula apenas dados oriundos da rota de dados), FromQuery, FromHeader, FromBody, FromServices - (vicula o valor à implementação que foi configurada no seu conteiner DI) 
+Atenção especial ao [FromServices]: Permite que que vc utilize um service registrado sem configurá-lo no construtor. Por padrão é feita essa inferêcia de onde utilizar services, mas pode-se desabilitá-la e fazê-la usando o atributo. É bacana quando não se quer que toda a classe tenha acesso ao service. Pode inclusive registrar o service como transiente ou persistente, etc. 
+Os atributos são interessantes para segurança e personalização das rotas.
 
 
 
