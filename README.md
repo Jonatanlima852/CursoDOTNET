@@ -68,9 +68,6 @@ Em Program.cs, adicionar o AddControllers() aos serviços, e condigurar app.MapC
 
 Para criar um controlador, no Visual Studio, criar "API Controller with actions using Entity Framework"
 
-```
-dotnet run
-```
 
 # Otimizações e Ajustes
 Se tiver referências cíclicas na aplicação, configurar para o serializer Json ignorar estas referências no Program.cs.
@@ -123,10 +120,19 @@ Atenção especial ao [FromServices]: Permite que que vc utilize um service regi
 Os atributos são interessantes para segurança e personalização das rotas.
 
 
+# Lendo arquivo de configuração 
 
+Para ler atributos e atributos que estão em sections do arquivoo appsettings.json, deve-se utilizar a um objeto _configuration : IConfiguration  que por padrão já está injetada no conteiner DI. 
 
+Para ler a partir da classe Program, note que a var builder representa uma instância de WebApplicationBuilder, que possui uma propriedade Configuration -> basta utilizar builder.Configuration["secao:chave"] 
 
+# Middlewares 
 
+Quando um request http chega à aplicação, ela passa por um pipeline de middlewares antes de ser mapeado para um devido controller que execute a actions. 
+
+Ex de sequencia de middlewares: autenticação  -> autorização -> mapeamento de requests. Os middlewares são configurados a partir da classe Program com  a variavel app. A ordem de definição é importante pois reflete como é a sequencia de middlewares no pipeline. Deve-se passar para o app.Use() o context e o next(prox passo do midlleware). Para o final, pode-se usar app.Run(context).
+
+Outro middleware importante é o UseExceptionHandler, para capturar exceções não tratadas, definir uma resposta HTTP com um código de status 500, obter detalhes da exceção e enviar resposta ao cliente. 
 
 
 
