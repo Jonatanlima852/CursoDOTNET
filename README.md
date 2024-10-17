@@ -94,7 +94,7 @@ Sobre tipos de retornonnas funções do controller, ActionResult implementa a in
 
 Métodos Actions Síncronos: Quando uma request chega, uma thread do poll da aplicação é designada para processá-la e ficará bloqueada até o fim do request.
 
-Métodos Actions Assíncrons: A thread é encarregada de processar a requisição, mas é devolvida ao pool enquanto a operação é feira. Quando ela acaba, a thread é avisada e retoma o controle. 
+Métodos Actions Assíncrons: A thread é encarregada de processar a requisição, mas é devolvida ao pool enquanto a operação é feita. Quando ela acaba, a thread é avisada e retoma o controle. 
 
 Para fazer uso disso, usa-se async, await e o tipo Task como tipo para a action. Regras:
 1. A assinatura do método deve incluir o modificador async
@@ -134,7 +134,17 @@ Ex de sequencia de middlewares: autenticação  -> autorização -> mapeamento d
 
 Outro middleware importante é o UseExceptionHandler, para capturar exceções não tratadas, definir uma resposta HTTP com um código de status 500, obter detalhes da exceção e enviar resposta ao cliente. 
 
+# Filtros 
 
+Filtros são atributos anexados às classes ou métodos de controladores que injetam lógica adicional ao processamento da requisição e permitem a implementação de funcionalidades relacionadas a autorização, exception, log e cache de forma simples e elegante. 
+
+Os filtros permitem executar um código personalizado antes ou depois de executar um método action. Permitem também realizar tarefas repetitivas comuns a métodos actions e são chamados em certos estágio do pipeline. Eles podem ser síncronos ou assíncronos implementando métodos OnActionExecuting(antes), OnActionExecuted(depois) e OnActionExecutingAsync(assíncrono).
+
+O pipeline de invocação das actions é o seguinte, e é executado após o framework selecionar a action a ser executada:
+
+### Authorization Filters -> Resource Filters -> Model Binding -> Action Filters -> Action Execution -> Action Filters -> Exception Filters -> Result Filters -> Result Execution -> Resource Filters.
+
+Um filtro pode ser adicionado ao pipeline em três escopos: pelo método action, pela classe do controlador ou globalmente. Ao adicionar no conteiner DI, utilizar addScoped para ser criado a cada nova requisição
 
 
 # Para executar a API, usamos:

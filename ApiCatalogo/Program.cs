@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiCatalogo.Context;
 using System.Text.Json.Serialization;
 using ApiCatalogo.Extensions;
+using ApiCatalogo.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ string? mySqlConnection = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(mySqlConnection));  
 
-
+builder.Services.AddScoped<ApiLoggingFilter>(); //adicionando filtro ao conteiner DI 
 
 var app = builder.Build();
 

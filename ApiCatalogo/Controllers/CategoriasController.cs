@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiCatalogo.Models;
 using ApiCatalogo.Context;
+using ApiCatalogo.Filters;
 
 namespace ApiCatalogo.Controllers
 {
@@ -16,14 +17,17 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Categoria>> Get()
+        [ServiceFilter(typeof(ApiLoggingFilter))] //Utilizando filtro através do ServiceFilter
+        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
         {
-            var categorias = _context.Categorias.AsNoTracking().Take(10).ToList();
-            if(categorias is null)
-            {
-                return NotFound("Categorias não encontradas.");
+            try {
+                return await _context.Categorias.AsNoTracking().ToListAsync();
             }
-            return categorias;
+            catch (Exception) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um problema ao tratar sua solicitação");
+            }
         }
 
         [HttpGet("{id:int}", Name="ObterCategoria")]
