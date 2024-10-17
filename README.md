@@ -146,6 +146,13 @@ O pipeline de invocação das actions é o seguinte, e é executado após o fram
 
 Um filtro pode ser adicionado ao pipeline em três escopos: pelo método action, pela classe do controlador ou globalmente. Ao adicionar no conteiner DI, utilizar addScoped para ser criado a cada nova requisição
 
+# Logging 
+
+Log de dados é um arquivo gerado para descrever eventos sobre o funcionamento do software, utilização por usuários e interação com outros sistmas. É um recurso essencial para investigar problemas de comportamento, segurança e acessibilidade do software. A ASP.NET Core tem suporte de diversos provedores de logs, mas há os internos, que permitem enviar logs para destinos ou se conectar a estruturas de registros de log de terceiros(Log4Net, NLog...). 
+
+Alguns provedores: Console, Debug, EventLog, AzureApp, Trace, Event. Há níveis de log(severidade): Critical, Error, Warning, Debug, Trace(apenas para dev)...
+
+Melhor forma de criar logs: usar instância da interface ILogger via ID usando método Log. As configurações de logging estão em appsettings.json. 
 
 # Para executar a API, usamos:
 
