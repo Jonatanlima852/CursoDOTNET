@@ -158,6 +158,25 @@ Para lidar com o tratamento de erros em ambiente de produção, podemos configur
 
 Implementando a interface IExceptionFilter, podemos tratar os erros que ocorrem durante a execução de uma ação por um controlador. Assim, podemos redirecionar para páginas específicas, tratar o erro com mensagens específicas, etc -> Isso possibilita tirar TODOS blocos try-catch devido ao tratamento gobal de exceções. 
 
+# Padrão Repository 
+
+O padrão repository faz a mediação entre o domínio e as camadas de mapeamento de dados. A lógica de negócio, assim, não tem conhecimento de qual ferramenta se está utilizando no mapeamento de dados.
+
+Benefícios do padrão repository: minimiza a lógica de consultas na aplicação, evitando consultas esparramadas pelo código, visto que ficarão encapsuladas no repositório; desacopla a aplicação dos frameworks de persistência utilizados(nesse caso, pode-se trocar o EF Core); facilita a realização de testes unitários.
+
+Pode ser implementado da seguinte forma: cria-se interface onde define-se os métodos a serem implementados, registra no conteiner DI as classes que as implementam com addScoped.
+
+Pode-se utilizar repositório específico(métodos mais personalizados) ou genérico.
+
+
+
+
+
+
+
+
+
+
 
 # Para executar a API, usamos:
 
