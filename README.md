@@ -80,8 +80,6 @@ Além disso, nunca retornar todos registros de um conulta -> adicionar método T
 
 Também nunca retornar objetos relacionados sem aplicar filtro. 
 
-Para lidar com o tratamento de erros em ambiente de produção, podemos configurar uma página de tratamento para estes erros personalizada para o ambiente de produção, usando  middleware UseExcpetionHandler. Captura e registra requisições não tratadas. Além disso, usamos Try Catch e a lib StatusCode.
-
 # Roteamento 
 
 Roteamento é importante para clareza dos endpoints e não haver ambiguidade.
@@ -153,6 +151,13 @@ Log de dados é um arquivo gerado para descrever eventos sobre o funcionamento d
 Alguns provedores: Console, Debug, EventLog, AzureApp, Trace, Event. Há níveis de log(severidade): Critical, Error, Warning, Debug, Trace(apenas para dev)...
 
 Melhor forma de criar logs: usar instância da interface ILogger via ID usando método Log. As configurações de logging estão em appsettings.json. 
+
+# Tratamento de erros e exceções 
+
+Para lidar com o tratamento de erros em ambiente de produção, podemos configurar uma página de tratamento para estes erros personalizada para o ambiente de produção, usando  middleware UseExcpetionHandler. Captura e registra requisições não tratadas. Além disso, usamos Try Catch e a lib StatusCode. Pode-se fazer um filtro/middleware de ação personalizado para evitar a repetição deste código. 
+
+Implementando a interface IExceptionFilter, podemos tratar os erros que ocorrem durante a execução de uma ação por um controlador. Assim, podemos redirecionar para páginas específicas, tratar o erro com mensagens específicas, etc -> Isso possibilita tirar TODOS blocos try-catch devido ao tratamento gobal de exceções. 
+
 
 # Para executar a API, usamos:
 
