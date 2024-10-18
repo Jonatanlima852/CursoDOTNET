@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Logging;
+using ApiCatalogo.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(mySqlConnection));  
 
 builder.Services.AddScoped<ApiLoggingFilter>(); //adicionando filtro ao conteiner DI 
+
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>(); // registro de serviço addScoped(toda vez nova instância) - injeção de dependência da classe concreta que implementa a interface 
 
 builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
 {

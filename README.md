@@ -164,7 +164,7 @@ O padrão repository faz a mediação entre o domínio e as camadas de mapeament
 
 Benefícios do padrão repository: minimiza a lógica de consultas na aplicação, evitando consultas esparramadas pelo código, visto que ficarão encapsuladas no repositório; desacopla a aplicação dos frameworks de persistência utilizados(nesse caso, pode-se trocar o EF Core); facilita a realização de testes unitários.
 
-Pode ser implementado da seguinte forma: cria-se interface onde define-se os métodos a serem implementados, registra no conteiner DI as classes que as implementam com addScoped.
+Pode ser implementado da seguinte forma: cria-se interface onde define-se os métodos a serem implementados, registra no conteiner DI as classes concreatas que as implementam com addScoped, e utiliza o contrato da interface nos controllers. 
 
 Pode-se utilizar repositório específico(métodos mais personalizados) ou genérico.
 
