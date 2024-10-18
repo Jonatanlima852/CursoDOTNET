@@ -21,14 +21,6 @@ namespace ApiCatalogo.Controllers
         [HttpGet] 
         public async Task<ActionResult<IEnumerable<Produto>>> GetAsync()
         {
-
-            // var produtos = _context.Produtos.AsNoTracking().Take(10).ToList();
-            // if(produtos is null)
-            // {
-            //     return NotFound("Produtos não encontrados.");
-            // }
-            // return produtos;
-
             return await _context.Produtos.AsNoTracking().Take(10).ToListAsync();
         }
 

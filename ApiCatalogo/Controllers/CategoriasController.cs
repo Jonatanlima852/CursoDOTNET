@@ -22,14 +22,7 @@ namespace ApiCatalogo.Controllers
         [ServiceFilter(typeof(ApiLoggingFilter))] //Utilizando filtro através do ServiceFilter
         public async Task<ActionResult<IEnumerable<Categoria>>> Get()
         {
-            try {
-                return await _context.Categorias.AsNoTracking().ToListAsync();
-            }
-            catch (Exception) 
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Ocorreu um problema ao tratar sua solicitação");
-            }
+            return await _context.Categorias.AsNoTracking().ToListAsync();
         }
 
         [HttpGet("{id:int}", Name="ObterCategoria")]
