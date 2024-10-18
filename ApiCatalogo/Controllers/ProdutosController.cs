@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiCatalogo.Models;
 using ApiCatalogo.Context;
+using Microsoft.Extensions.Logging;
 
 namespace ApiCatalogo.Controllers
 {
@@ -10,9 +11,11 @@ namespace ApiCatalogo.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly AppDbContext _context; // variável somente leitura para não ser alterado após inicializar
-        public ProdutosController(AppDbContext context)  // construtor que recebe o contexto e passa para a classe
+        private readonly ILogger _logger; 
+        public ProdutosController(AppDbContext context, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
         {
             _context = context;
+            _logger = logger;
         }
 
         // Para acessar um DB a recomendação é utilizar métodos assícronos
@@ -74,7 +77,8 @@ namespace ApiCatalogo.Controllers
 
             if(produto is null)
             {
-                return NotFound("Produto não localizado...");
+                _logger.LogWarning($"Produto com id={id} não encontrado...");
+                return NotFound($"Produto com id={id} não encontrado...");
             }
             _context.Produtos.Remove(produto); // necessário pois estamos em cenário desconectado
             _context.SaveChanges();

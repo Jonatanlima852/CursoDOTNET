@@ -66,17 +66,18 @@ namespace ApiCatalogo.Controllers
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            var produto = _context.Produtos.FirstOrDefault(c => c.ProdutoId == id);
+            var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
 
-            if(produto is null)
+            if(categoria is null)
             {
-                return NotFound("Produto não localizado");
+                _logger.LogWarning($"Categoria com id={id} não encontrada...");
+                return NotFound($"Categoria com id={id} não encontrada...");
             }
 
-            _context.Produtos.Remove(produto);
+            _context.Categorias.Remove(categoria);
             _context.SaveChanges();
 
-            return Ok(produto);
+            return Ok(categoria);
         }
 
         [HttpGet("produtos")]
