@@ -171,8 +171,15 @@ Pode-se utilizar repositório específico(métodos mais personalizados) ou gené
 Vantagens do repositório genérico: Reduz código repetido, manutenção trabalhosa e potencial de inconsistências. Abordagem híbrida: utilizar repositórios específicos apenas quando funcionalidades personalizadas são necessárias para entidades específicas e o genérico para o CRUD comum (repositórios específicos podem herdar o genérico).
 
 
+# Padrão Unity of Work 
 
+Com a criação de vários repositórios que recebem a instância do DbContext e são utilizados nos controladores, surge um problema de persistência: a injeção de cada repositório cria múltiplas instâncias do seu contexto(DbContext) o que pode causar problemas de concorrência (problemas de acesso ao banco de dados).
 
+O Padrão unity of work tem como objetivo garantir que todas operações no banco de dados sejam consistentes. Ou seja, ele é responsável por criar, iniciar e committar ou desfazer as transações. Ele envolve a lógica dos respositórios e busca tratar cada operação de forma atômica. Dessa forma, quando se usa o padrão respository, também se usa o padrão Unity Of Work. 
+
+O Unity of Work mantém uma lista de objetos afetados por uma transação, coordena a gravação de alterações e coordena a resolução de problemas de simultaneidade. 
+
+Para implementar esse padrão, podemos criar uma interface com métodos para iniciar, confirmar(commit) e reverter(rollback) transações. Criar uma classe concreta onde gerenciamos uma instância do DbContext, sendo que ela usa um repositório genérico, e por fim registrar a injeção de dependência. Os repositórios agora não devem chamar o método save changes. Apenas preparam mudanças para a persistência. 
 
 
 
