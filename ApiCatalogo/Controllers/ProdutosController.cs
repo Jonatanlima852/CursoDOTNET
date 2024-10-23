@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiCatalogo.Models;
 using ApiCatalogo.Context;
 using Microsoft.Extensions.Logging;
+using ApiCatalogo.Repositories;
 
 namespace ApiCatalogo.Controllers
 {
@@ -10,11 +11,11 @@ namespace ApiCatalogo.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly AppDbContext _context; // variável somente leitura para não ser alterado após inicializar
+        private readonly IProdutoRepository _repository; // variável somente leitura para não ser alterado após inicializar
         private readonly ILogger _logger; 
-        public ProdutosController(AppDbContext context, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
+        public ProdutosController(IProdutoRepository repository, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
         {
-            _context = context;
+            _repository = repository;
             _logger = logger;
         }
 
@@ -22,22 +23,21 @@ namespace ApiCatalogo.Controllers
         // Usamos decorator para que o controlador receba as requisições tipo Get
         // Inumerable é otimizado, por demanda, não guarda tudo na memória 
         [HttpGet] 
-        public async Task<ActionResult<IEnumerable<Produto>>> GetAsync()
+        public ActionResult<IEnumerable<Produto>> Get()
         {
-            return await _context.Produtos.AsNoTracking().Take(10).ToListAsync();
+            var produtos = _repository.GetProdutos().ToList();
+            return Ok(produtos);
         }
 
         [HttpGet("{id:int}", Name="ObterProduto")]  //para receber o id e obter na determinada rota
-        public async Task<ActionResult<Produto>> GetByIdAsync(int id)
+        public ActionResult<Produto> GetById(int id)
         {
-            var produto = await _context.Produtos.AsNoTracking()
-                .FirstOrDefaultAsync(p => p.ProdutoId == id); // vai receber o primeiro produto que satisfaz o critério
-            
+            var produto = _repository.GetProduto(id);            
             if(produto is null)
             {
                 return NotFound("Produto não encontrado");
             }
-            return produto;
+            return Ok(produto);
         }
 
         // Com o decorador do API controller, não é mais necessário o decorador [FromBody] e nem verificação se é consistente com o Model
@@ -47,11 +47,10 @@ namespace ApiCatalogo.Controllers
             if(produto is null)
                 return BadRequest();
 
-            _context.Produtos.Add(produto); 
-            _context.SaveChanges(); // Para persistir os dados na tabela
+            var novoProduto = _repository.Create(produto);
 
             return new CreatedAtRouteResult("ObterProduto",
-                new {id = produto.ProdutoId}, produto);       // retorna código 201 de criação 
+                new {id = novoProduto.ProdutoId}, produto);       // retorna código 201 de criação 
         }
 
         [HttpPut("{id:int}")]
@@ -63,27 +62,40 @@ namespace ApiCatalogo.Controllers
             }
 
             // como estamos em um cenário desconectado(EF Core e DB), precisamos avisar o contexto de que a entidade do produto está em um cenário modificado
-            _context.Entry(produto).State = EntityState.Modified;  //EF Core entenderá que esta entidade precisa ser persistida
-            _context.SaveChanges();
+            // _context.Entry(produto).State = EntityState.Modified;  //EF Core entenderá que esta entidade precisa ser persistida
+            // _context.SaveChanges();
 
-            return Ok(produto);  // Status 200 e produto alterado
+            bool atualizado = _repository.Update(produto);
+
+            if (atualizado) 
+                return Ok(produto);
+            else 
+                return StatusCode(500, $"Falha ao atualizar produto de id = {id}");
+
+            //return Ok(produto);  // Status 200 e produto alterado
         } // Observe que essa abordagem exige que todos os dados sejam passados. Outra abordagem utilizaria o Patch. 
 
 
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
+            // var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
 
-            if(produto is null)
-            {
-                _logger.LogWarning($"Produto com id={id} não encontrado...");
-                return NotFound($"Produto com id={id} não encontrado...");
-            }
-            _context.Produtos.Remove(produto); // necessário pois estamos em cenário desconectado
-            _context.SaveChanges();
+            // if(produto is null)
+            // {
+            //     _logger.LogWarning($"Produto com id={id} não encontrado...");
+            //     return NotFound($"Produto com id={id} não encontrado...");
+            // }
+            // _context.Produtos.Remove(produto); // necessário pois estamos em cenário desconectado
+            // _context.SaveChanges();
 
-            return Ok(produto); //StatusCode 200 e o produto excluído
+            // return Ok(produto); //StatusCode 200 e o produto excluído
+
+            bool detaletado = _repository.Delete(id);
+            if (detaletado) 
+                return Ok($"produto de id={id} foi excluído");
+            else 
+                return StatusCode(500, $"Falha ao deletar produto de id={id}");
         }
     }
 }
