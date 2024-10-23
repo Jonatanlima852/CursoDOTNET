@@ -168,6 +168,8 @@ Pode ser implementado da seguinte forma: cria-se interface onde define-se os mé
 
 Pode-se utilizar repositório específico(métodos mais personalizados) ou genérico.
 
+Vantagens do repositório genérico: Reduz código repetido, manutenção trabalhosa e potencial de inconsistências. Abordagem híbrida: utilizar repositórios específicos apenas quando funcionalidades personalizadas são necessárias para entidades específicas e o genérico para o CRUD comum (repositórios específicos podem herdar o genérico).
+
 
 
 
