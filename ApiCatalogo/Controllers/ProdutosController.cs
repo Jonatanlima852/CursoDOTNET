@@ -96,12 +96,12 @@ namespace ApiCatalogo.Controllers
             return Ok(produtoDeletado);
         }
 
-        [HttpGet("produto/{id}")]
+        [HttpGet("produto/{id:int}")]
         public ActionResult <IEnumerable<Produto>> GetProdutosCategoria(int id)
         {
             var produtos = _produtoRepository.GetProdutosPorCategoria(id);
 
-            if (produtos is not null)
+            if (produtos is null)
                 return NotFound();
 
             return Ok(produtos);    
