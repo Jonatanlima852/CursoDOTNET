@@ -11,6 +11,12 @@ public class CategoriaRepository : ICategoriaRepository
     {
         _context = context;
     }
+
+    public IEnumerable<Categoria> GetCategorias()
+    {
+        return _context.Categorias.ToList();
+    }
+    
     public Categoria Create(Categoria categoria)
     {
         if(categoria == null) throw new ArgumentNullException(nameof(categoria));
@@ -24,11 +30,6 @@ public class CategoriaRepository : ICategoriaRepository
     public Categoria GetCategoria(int id)
     {
         return _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
-    }
-
-    public IEnumerable<Categoria> GetCategorias()
-    {
-        return _context.Categorias.ToList();
     }
 
     public Categoria Update(Categoria categoria)
