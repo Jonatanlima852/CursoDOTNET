@@ -11,13 +11,14 @@ namespace ApiCatalogo.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly IProdutoRepository _produtoRepository; // variável somente leitura para não ser alterado após inicializar
-        private readonly IRepository<Produto> _repository; // variável somente leitura para não ser alterado após inicializar
-        private readonly ILogger _logger; 
-        public ProdutosController(IProdutoRepository produtoRepository, IRepository<Produto> repository, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
+        private readonly IUnityOfWork _uof;
+        private readonly ILogger _logger; // variável somente leitura para não ser alterado após inicializar
+
+        public ProdutosController(IUnityOfWork uof, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
         {
-            _produtoRepository = produtoRepository; // vamos utilizar o repositório especifico para um dos endpoints
-            _repository = repository;
+            // _produtoRepository = produtoRepository; // vamos utilizar o repositório especifico para um dos endpoints
+            // _repository = repository;
+            _uof = uof;
             _logger = logger;
         }
 
@@ -27,14 +28,14 @@ namespace ApiCatalogo.Controllers
         [HttpGet] 
         public ActionResult<IEnumerable<Produto>> Get()
         {
-            var produtos = _repository.GetAll().ToList();
+            var produtos = _uof.ProdutoRepository.GetAll().ToList();
             return Ok(produtos);
         }
 
         [HttpGet("{id:int}", Name="ObterProduto")]  //para receber o id e obter na determinada rota
         public ActionResult<Produto> GetById(int id)
         {
-            var produto = _repository.Get(p => p.ProdutoId == id);            
+            var produto = _uof.ProdutoRepository.Get(p => p.ProdutoId == id);            
             if(produto is null)
             {
                 return NotFound("Produto não encontrado");
@@ -49,8 +50,8 @@ namespace ApiCatalogo.Controllers
             if(produto is null)
                 return BadRequest();
 
-            var novoProduto = _repository.Create(produto);
-
+            var novoProduto = _uof.ProdutoRepository.Create(produto);
+            _uof.Commit();
             return new CreatedAtRouteResult("ObterProduto",
                 new {id = novoProduto.ProdutoId}, produto);       // retorna código 201 de criação 
         }
@@ -67,8 +68,8 @@ namespace ApiCatalogo.Controllers
             // _context.Entry(produto).State = EntityState.Modified;  //EF Core entenderá que esta entidade precisa ser persistida
             // _context.SaveChanges();
 
-            var produtoAtualizado = _repository.Update(produto);
-
+            var produtoAtualizado = _uof.ProdutoRepository.Update(produto);
+            _uof.Commit();
             return Ok(produtoAtualizado);
 
             //return Ok(produto);  // Status 200 e produto alterado
@@ -91,15 +92,22 @@ namespace ApiCatalogo.Controllers
             // return Ok(produto); //StatusCode 200 e o produto excluído
 
 
-            var produto = _repository.Get(p => p.ProdutoId == id);
-            var produtoDeletado = _repository.Delete(produto);
+            var produto = _uof.ProdutoRepository.Get(p => p.ProdutoId == id);
+            if(produto is null)
+            {
+                _logger.LogWarning($"Produto com id={id} não encontrado...");
+                return NotFound($"Produto com id={id} não encontrado...");
+            }
+            var produtoDeletado = _uof.ProdutoRepository.Delete(produto);
+            _uof.Commit();
+
             return Ok(produtoDeletado);
         }
 
         [HttpGet("produto/{id:int}")]
         public ActionResult <IEnumerable<Produto>> GetProdutosCategoria(int id)
         {
-            var produtos = _produtoRepository.GetProdutosPorCategoria(id);
+            var produtos = _uof.ProdutoRepository.GetProdutosPorCategoria(id);
 
             if (produtos is null)
                 return NotFound();

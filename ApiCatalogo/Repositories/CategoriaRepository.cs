@@ -10,6 +10,5 @@ public class CategoriaRepository : Repository<Categoria>, ICategoriaRepository /
     public CategoriaRepository(AppDbContext context) : base(context) // se precisar de injeção de contexto, buscar na classe base
     {
     }
-
     
 }
