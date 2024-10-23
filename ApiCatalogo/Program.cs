@@ -34,6 +34,7 @@ builder.Services.AddScoped<ApiLoggingFilter>(); //adicionando filtro ao conteine
 
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>(); // registro de serviço addScoped(toda vez nova instância) - injeção de dependência da classe concreta que implementa a interface 
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>(); // sempre que for solicitada uma instância da interface, será fornecida a implementação da classe concreta
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
 {
