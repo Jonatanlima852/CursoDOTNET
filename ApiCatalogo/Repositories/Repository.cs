@@ -2,6 +2,7 @@
 
 using System.Linq.Expressions;
 using ApiCatalogo.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiCatalogo.Repositories;
 
@@ -17,7 +18,8 @@ public class Repository<T> : IRepository<T> where T : class //garante que T herd
 
     public IEnumerable<T> GetAll()
     {
-        return _context.Set<T>(); // método set utilizado para acessar o conjunto correspondente à tabela T
+        return _context.Set<T>().AsNoTracking().ToList(); // método set utilizado para acessar o conjunto correspondente à tabela T
+        // adicionando as no tracking para ganhar desempenho e não rastrear entidades
     }
 
     public T? Get(Expression<Func<T, bool>> predicate)
@@ -28,7 +30,6 @@ public class Repository<T> : IRepository<T> where T : class //garante que T herd
     public T Create(T entity)
     {
         _context.Set<T>().Add(entity);
-        _context.SaveChanges();
         return entity;
     }
 
@@ -36,14 +37,12 @@ public class Repository<T> : IRepository<T> where T : class //garante que T herd
     {
         // _context.Entry(entity).State = EntityState.Modified; -> método mais prolixo
         _context.Set<T>().Update(entity);
-        _context.SaveChanges();
         return entity;
     }
 
     public T Delete(T entity)
     {
         _context.Set<T>().Remove(entity);
-        _context.SaveChanges();
         return entity;
     }
 
