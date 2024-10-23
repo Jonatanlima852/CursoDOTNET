@@ -11,9 +11,9 @@ namespace ApiCatalogo.Controllers
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly ICategoriaRepository _repository; //utiliza a interface -> pode receber qualquer classe que implementa os métodos
+        private readonly IRepository<Categoria> _repository; //utiliza a interface -> pode receber qualquer classe que implementa os métodos
         private readonly ILogger _logger;
-        public CategoriasController(ICategoriaRepository repository, ILogger<CategoriasController> logger) 
+        public CategoriasController(IRepository<Categoria> repository, ILogger<CategoriasController> logger) 
         {
             _logger = logger;
             _repository = repository;
@@ -23,14 +23,14 @@ namespace ApiCatalogo.Controllers
         [ServiceFilter(typeof(ApiLoggingFilter))] //Utilizando filtro através do ServiceFilter
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            var categorias = _repository.GetCategorias();
+            var categorias = _repository.GetAll();
             return Ok(categorias);
         }
 
         [HttpGet("{id:int}", Name="ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
-            var categoria = _repository.GetCategoria(id);
+            var categoria = _repository.Get(c => c.CategoriaId == id);
 
             if(categoria is null)
             {
@@ -72,7 +72,7 @@ namespace ApiCatalogo.Controllers
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            var categoria = _repository.GetCategoria(id);
+            var categoria = _repository.Get(c => c.CategoriaId == id);
 
             if(categoria is null)
             {
@@ -80,7 +80,7 @@ namespace ApiCatalogo.Controllers
                 return NotFound($"Categoria com id={id} não encontrada...");
             }
 
-            var categoriaExcluida = _repository.Delete(id);
+            var categoriaExcluida = _repository.Delete(categoria);
 
             return Ok(categoriaExcluida);
         }

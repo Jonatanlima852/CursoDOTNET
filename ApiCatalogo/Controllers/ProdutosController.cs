@@ -11,10 +11,12 @@ namespace ApiCatalogo.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly IProdutoRepository _repository; // variável somente leitura para não ser alterado após inicializar
+        private readonly IProdutoRepository _produtoRepository; // variável somente leitura para não ser alterado após inicializar
+        private readonly IRepository<Produto> _repository; // variável somente leitura para não ser alterado após inicializar
         private readonly ILogger _logger; 
-        public ProdutosController(IProdutoRepository repository, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
+        public ProdutosController(IProdutoRepository produtoRepository, IRepository<Produto> repository, ILogger<ProdutosController> logger)  // construtor que recebe o contexto e passa para a classe
         {
+            _produtoRepository = produtoRepository; // vamos utilizar o repositório especifico para um dos endpoints
             _repository = repository;
             _logger = logger;
         }
@@ -25,14 +27,14 @@ namespace ApiCatalogo.Controllers
         [HttpGet] 
         public ActionResult<IEnumerable<Produto>> Get()
         {
-            var produtos = _repository.GetProdutos().ToList();
+            var produtos = _repository.GetAll().ToList();
             return Ok(produtos);
         }
 
         [HttpGet("{id:int}", Name="ObterProduto")]  //para receber o id e obter na determinada rota
         public ActionResult<Produto> GetById(int id)
         {
-            var produto = _repository.GetProduto(id);            
+            var produto = _repository.Get(p => p.ProdutoId == id);            
             if(produto is null)
             {
                 return NotFound("Produto não encontrado");
@@ -65,12 +67,9 @@ namespace ApiCatalogo.Controllers
             // _context.Entry(produto).State = EntityState.Modified;  //EF Core entenderá que esta entidade precisa ser persistida
             // _context.SaveChanges();
 
-            bool atualizado = _repository.Update(produto);
+            var produtoAtualizado = _repository.Update(produto);
 
-            if (atualizado) 
-                return Ok(produto);
-            else 
-                return StatusCode(500, $"Falha ao atualizar produto de id = {id}");
+            return Ok(produtoAtualizado);
 
             //return Ok(produto);  // Status 200 e produto alterado
         } // Observe que essa abordagem exige que todos os dados sejam passados. Outra abordagem utilizaria o Patch. 
@@ -91,11 +90,21 @@ namespace ApiCatalogo.Controllers
 
             // return Ok(produto); //StatusCode 200 e o produto excluído
 
-            bool detaletado = _repository.Delete(id);
-            if (detaletado) 
-                return Ok($"produto de id={id} foi excluído");
-            else 
-                return StatusCode(500, $"Falha ao deletar produto de id={id}");
+
+            var produto = _repository.Get(p => p.ProdutoId == id);
+            var produtoDeletado = _repository.Delete(produto);
+            return Ok(produtoDeletado);
+        }
+
+        [HttpGet("produto/{id}")]
+        public ActionResult <IEnumerable<Produto>> GetProdutosCategoria(int id)
+        {
+            var produtos = _produtoRepository.GetProdutosPorCategoria(id);
+
+            if (produtos is not null)
+                return NotFound();
+
+            return Ok(produtos);    
         }
     }
 }
